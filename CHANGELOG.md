@@ -1,3 +1,10 @@
+## [8.0.55](https://github.com/typescript-tools/monorepo/compare/v8.0.54...v8.0.55) (2023-09-17)
+
+
+### Bug Fixes
+
+* force a release with an empty commit ([b2dc7ad](https://github.com/typescript-tools/monorepo/commit/b2dc7ad95652e7dddb439bed51373268082eebff))
+
 ## [8.0.54](https://github.com/typescript-tools/rust-implementation/compare/v8.0.53...v8.0.54) (2023-09-14)
 
 
