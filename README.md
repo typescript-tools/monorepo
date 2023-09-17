@@ -4,7 +4,7 @@
 
 [build status]: https://github.com/typescript-tools/monorepo/actions/workflows/release.yml/badge.svg?event=push
 
-The `typescript-tools` are an opinionated collection of utilities for working with
+The **typescript-tools** are an opinionated collection of utilities for working with
 TypeScript monorepos. Read more in the [typescript-tools spec].
 
 [typescript-tools spec]: https://github.com/typescript-tools/spec
@@ -14,8 +14,8 @@ TypeScript monorepos. Read more in the [typescript-tools spec].
 Whereas [Lerna] was created for managing JavaScript monorepos, TypeScript monorepos have
 additional requirements introduced by the compilation step.
 
-The [original and reference implementation] of the `typescript-tools` is written in
-TypeScript. The Rust implementation of the `typescript-tools` optimizes execution
+The [original and reference implementation] of the **typescript-tools** is written in
+TypeScript. The Rust implementation of the **typescript-tools** optimizes execution
 speed.
 
 [lerna]: https://github.com/lerna/lerna
