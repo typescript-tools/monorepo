@@ -1,3 +1,10 @@
+## [8.0.56](https://github.com/typescript-tools/monorepo/compare/v8.0.55...v8.0.56) (2023-09-17)
+
+
+### Bug Fixes
+
+* update repository metadata to reflect new URL ([e40a660](https://github.com/typescript-tools/monorepo/commit/e40a6600147b94c65e5637b7e62b3d4163e9a946))
+
 ## [8.0.55](https://github.com/typescript-tools/monorepo/compare/v8.0.54...v8.0.55) (2023-09-17)
 
 
