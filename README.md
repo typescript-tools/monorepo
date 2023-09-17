@@ -1,8 +1,8 @@
 # TypeScript Tools 🦀
 
-[![Build Status]](https://github.com/typescript-tools/rust-implementation/actions/workflows/release.yml)
+[![Build Status]](https://github.com/typescript-tools/monorepo/actions/workflows/release.yml)
 
-[build status]: https://github.com/typescript-tools/rust-implementation/actions/workflows/release.yml/badge.svg?event=push
+[build status]: https://github.com/typescript-tools/monorepo/actions/workflows/release.yml/badge.svg?event=push
 
 The `typescript-tools` are an opinionated collection of utilities for working with
 TypeScript monorepos. Read more in the [typescript-tools spec].
