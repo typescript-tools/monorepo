@@ -1,0 +1,27 @@
+[package]
+name = "typescript_tools"
+version = "8.0.57"
+edition = "2021"
+authors = ["Eric Crosson <eric.s.crosson@utexas.edu>"]
+license = "ISC"
+description = "Tools for working with TypeScript monorepos"
+readme = "README.md"
+homepage = "https://github.com/typescript-tools/monorepo"
+keywords = ["typescript", "monorepo"]
+
+[lib]
+name = "typescript_tools"
+path = "src/lib.rs"
+
+[dependencies]
+askama = "0.12"
+globwalk = "0.8"
+pariter = "0.5"
+pathdiff = "0.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+
+[dev-dependencies]
+assert-json-diff = "2.0.2"
+tempdir = "0.3.7"
+utilities = { path = "../utilities" }

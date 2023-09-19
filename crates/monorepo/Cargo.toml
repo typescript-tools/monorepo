@@ -1,0 +1,21 @@
+[package]
+name = "monorepo"
+version = "8.0.57"
+publish = false
+edition = "2021"
+authors = ["Eric Crosson <eric.s.crosson@utexas.edu>"]
+license = "ISC"
+description = "Tools for working with TypeScript monorepos"
+readme = "README.md"
+homepage = "https://github.com/typescript-tools/monorepo"
+keywords = ["cli", "typescript", "monorepo"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "monorepo"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "=4.4.4", features = ["cargo", "derive"] }
+serde_json = { version = "=1.0.107", features = ["preserve_order"] }
+typescript_tools = { path = "../typescript_tools" }

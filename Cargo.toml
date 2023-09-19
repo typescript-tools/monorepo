@@ -1,46 +1,8 @@
-[package]
-name = "typescript_tools"
-version = "8.0.57"
-edition = "2021"
-authors = ["Eric Crosson <eric.s.crosson@utexas.edu>"]
-license = "ISC"
-description = "Tools for working with TypeScript monorepos"
-readme = "README.md"
-homepage = "https://github.com/typescript-tools/monorepo"
-keywords = ["cli", "typescript", "monorepo"]
-categories = ["command-line-utilities"]
-exclude = [
-  "/.editorconfig",
-  "/.envrc",
-  "/.github",
-  "/.gitignore",
-  "/.rustfmt.toml",
-  "/CHANGELOG.md",
-  "/flake.{lock,nix}"
+[workspace]
+resolver = "2"
+members = [
+  "crates/*"
 ]
-
-[[bin]]
-name = "monorepo"
-path = "src/main.rs"
-
-[lib]
-name = "typescript_tools"
-path = "src/lib.rs"
-
-[dependencies]
-askama = "=0.12.0"
-clap = { version = "=4.4.4", features = ["cargo", "derive"] }
-globwalk = "=0.8.1"
-pariter = "=0.5.1"
-pathdiff = "=0.2.1"
-serde = { version = "=1.0.188", features = ["derive"] }
-serde_json = { version = "=1.0.107", features = ["preserve_order"] }
-
-[dev-dependencies]
-assert-json-diff = "2.0.2"
-semantic-release-rust = "1.0.0-alpha.8"
-tempdir = "0.3.7"
-utilities = { path = "utilities" }
 
 [profile.release]
 lto = true
