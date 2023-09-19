@@ -1,3 +1,13 @@
+# [9.0.0](https://github.com/typescript-tools/monorepo/compare/v8.0.57...v9.0.0) (2023-09-19)
+
+
+* refactor!: separate code into library and binary crate ([6111aef](https://github.com/typescript-tools/monorepo/commit/6111aefeb6a6f9ca72684da988410df3f4e20bba))
+
+
+### BREAKING CHANGES
+
+* separate the binary code out of the library crate
+
 ## [8.0.57](https://github.com/typescript-tools/monorepo/compare/v8.0.56...v8.0.57) (2023-09-18)
 
 
