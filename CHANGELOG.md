@@ -1,3 +1,10 @@
+## [9.0.1](https://github.com/typescript-tools/monorepo/compare/v9.0.0...v9.0.1) (2023-09-23)
+
+
+### Bug Fixes
+
+* widen `MonorepoManifest::from_directory` to take `AsRef<Path>` ([5a75929](https://github.com/typescript-tools/monorepo/commit/5a75929e4fce4cb6ff2474250abec4b74844abce))
+
 # [9.0.0](https://github.com/typescript-tools/monorepo/compare/v8.0.57...v9.0.0) (2023-09-19)
 
 
