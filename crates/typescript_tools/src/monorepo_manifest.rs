@@ -258,9 +258,12 @@ impl MonorepoManifest {
         })
     }
 
-    pub fn from_directory(root: &Path) -> Result<MonorepoManifest, FromFileError> {
-        MonorepoManifest::from_lerna_manifest(root)
-            .or_else(|_| MonorepoManifest::from_package_manifest(root))
+    pub fn from_directory<P>(root: P) -> Result<MonorepoManifest, FromFileError>
+    where
+        P: AsRef<Path>,
+    {
+        MonorepoManifest::from_lerna_manifest(root.as_ref())
+            .or_else(|_| MonorepoManifest::from_package_manifest(root.as_ref()))
     }
 
     pub fn package_manifests_by_package_name(
