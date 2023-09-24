@@ -1,9 +1,11 @@
 use std::{fmt::Display, path::PathBuf};
 
+use crate::types::PackageName;
+
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
 #[non_exhaustive]
 pub(crate) struct UnpinnedDependency {
-    pub name: String,
+    pub name: PackageName,
     pub actual: String,
     pub expected: String,
 }

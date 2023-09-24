@@ -14,7 +14,7 @@ use crate::out_of_date_project_references::{
     OutOfDateParentProjectReferences, OutOfDateTypescriptConfig,
 };
 use crate::package_manifest::PackageManifest;
-use crate::types::Directory;
+use crate::types::{Directory, PackageName};
 use crate::typescript_config::{
     TypescriptConfig, TypescriptParentProjectReference, TypescriptProjectReference,
 };
@@ -142,7 +142,7 @@ fn create_project_references(mut children: Vec<String>) -> Vec<TypescriptProject
 // This permits us to compile the monorepo from the top down.
 fn link_children_packages(
     root: &Directory,
-    package_manifests_by_package_name: &HashMap<String, PackageManifest>,
+    package_manifests_by_package_name: &HashMap<PackageName, PackageManifest>,
 ) -> Result<(), LinkError> {
     out_of_date_parent_project_references(root, package_manifests_by_package_name)?.try_for_each(
         |maybe_parent_project_references| -> Result<(), LinkError> {
@@ -158,7 +158,7 @@ fn link_children_packages(
 
 fn link_package_dependencies(
     root: &Directory,
-    package_manifests_by_package_name: &HashMap<String, PackageManifest>,
+    package_manifests_by_package_name: &HashMap<PackageName, PackageManifest>,
 ) -> Result<(), LinkError> {
     out_of_date_package_project_references(root, package_manifests_by_package_name)?
         .map(
@@ -294,7 +294,7 @@ pub enum LinkLintErrorKind {
 
 fn out_of_date_parent_project_references<'a>(
     root: &'a Directory,
-    package_manifests_by_package_name: &'a HashMap<String, PackageManifest>,
+    package_manifests_by_package_name: &'a HashMap<PackageName, PackageManifest>,
 ) -> Result<
     impl Iterator<Item = Result<OutOfDateParentProjectReferences, FromFileError>> + 'a,
     InvalidUtf8Error,
@@ -322,7 +322,7 @@ fn out_of_date_parent_project_references<'a>(
 
 fn out_of_date_package_project_references<'a>(
     root: &'a Directory,
-    package_manifests_by_package_name: &'a HashMap<String, PackageManifest>,
+    package_manifests_by_package_name: &'a HashMap<PackageName, PackageManifest>,
 ) -> Result<
     impl Iterator<Item = Result<OutOfDatePackageProjectReferences, FromFileError>> + 'a,
     InvalidUtf8Error,

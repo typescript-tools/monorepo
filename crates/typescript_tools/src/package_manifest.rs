@@ -5,12 +5,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::configuration_file::ConfigurationFile;
 use crate::io::{read_json_from_file, FromFileError};
-use crate::types::Directory;
+use crate::types::{Directory, PackageName};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PackageManifestFile {
-    pub name: String,
+    pub name: PackageName,
     pub version: String,
     #[serde(flatten)]
     pub extra_fields: serde_json::Map<String, serde_json::Value>,
@@ -96,7 +96,7 @@ impl PackageManifest {
             .next()
     }
 
-    pub fn dependencies_iter(&self) -> impl Iterator<Item = (&String, &serde_json::Value)> {
+    pub fn dependencies_iter(&self) -> impl Iterator<Item = (PackageName, &serde_json::Value)> {
         DependencyGroup::VALUES
             .iter()
             .filter_map(|dependency_group| {
@@ -106,11 +106,14 @@ impl PackageManifest {
                     .as_object()
             })
             .flat_map(|object| object.iter())
+            .map(|(package_name, package_version)| {
+                (PackageName::from(package_name), package_version)
+            })
     }
 
     pub fn internal_dependencies_iter<'a>(
         &'a self,
-        package_manifests_by_package_name: &'a HashMap<String, PackageManifest>,
+        package_manifests_by_package_name: &'a HashMap<PackageName, PackageManifest>,
     ) -> impl Iterator<Item = &'a PackageManifest> {
         DependencyGroup::VALUES
             .iter()
@@ -124,12 +127,14 @@ impl PackageManifest {
             // get all dependency names from all groups
             .flat_map(|dependency_group_value| dependency_group_value.keys())
             // filter out external packages
-            .filter_map(|package_name| package_manifests_by_package_name.get(package_name))
+            .filter_map(|package_name| {
+                package_manifests_by_package_name.get(&PackageName::from(package_name))
+            })
     }
 
     pub fn transitive_internal_dependency_package_names_exclusive<'a>(
         &'a self,
-        package_manifest_by_package_name: &'a HashMap<String, PackageManifest>,
+        package_manifest_by_package_name: &'a HashMap<PackageName, PackageManifest>,
     ) -> impl Iterator<Item = &'a PackageManifest> {
         // Depth-first search all transitive internal dependencies of package
         let mut seen_package_names = HashSet::new();
@@ -165,15 +170,19 @@ impl PackageManifest {
     pub fn npm_pack_file_basename(&self) -> String {
         format!(
             "{}-{}.tgz",
-            self.contents.name.trim_start_matches('@').replace('/', "-"),
+            self.contents
+                .name
+                .as_str()
+                .trim_start_matches('@')
+                .replace('/', "-"),
             &self.contents.version,
         )
     }
 
     pub fn unscoped_package_name(&self) -> &str {
-        match &self.contents.name.rsplit_once('/') {
+        match &self.contents.name.as_str().rsplit_once('/') {
             Some((_scope, name)) => name,
-            None => &self.contents.name,
+            None => &self.contents.name.as_str(),
         }
     }
 }

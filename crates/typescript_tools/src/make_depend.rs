@@ -10,7 +10,7 @@ use crate::configuration_file::ConfigurationFile;
 use crate::io::FromFileError;
 use crate::monorepo_manifest::{EnumeratePackageManifestsError, MonorepoManifest};
 use crate::package_manifest::PackageManifest;
-use crate::types::Directory;
+use crate::types::{Directory, PackageName};
 
 #[derive(Template)]
 #[template(path = "makefile")]
@@ -19,7 +19,7 @@ struct MakefileTemplate<'a> {
     root: &'a str,
     output_file: &'a str,
     package_directory: &'a str,
-    scoped_package_name: &'a str,
+    scoped_package_name: &'a PackageName,
     unscoped_package_name: &'a str,
     internal_dependency_package_json_filenames_inclusive: &'a Vec<String>,
     create_pack_target: &'a bool,

@@ -87,7 +87,7 @@ where
             .map(
                 |(package_name, package_manifest)| -> Result<(String, Vec<String>), QueryError> {
                     let key = match format {
-                        InternalDependenciesFormat::Name => package_name.to_owned(),
+                        InternalDependenciesFormat::Name => package_name.as_str().to_owned(),
                         InternalDependenciesFormat::Path => package_manifest
                             .directory()
                             .to_str()
@@ -103,7 +103,7 @@ where
                         .into_iter()
                         .map(|dependency| match format {
                             InternalDependenciesFormat::Name => {
-                                Ok(dependency.contents.name.to_owned())
+                                Ok(dependency.contents.name.as_str().to_owned())
                             }
                             InternalDependenciesFormat::Path => dependency
                                 .directory()

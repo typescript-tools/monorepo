@@ -9,7 +9,7 @@ use serde::Deserialize;
 use crate::configuration_file::ConfigurationFile;
 use crate::io::{read_json_from_file, FromFileError};
 use crate::package_manifest::PackageManifest;
-use crate::types::Directory;
+use crate::types::{Directory, PackageName};
 
 #[derive(Debug, Deserialize)]
 struct PackageManifestGlob(String);
@@ -273,7 +273,7 @@ impl MonorepoManifest {
 
     pub fn package_manifests_by_package_name(
         &self,
-    ) -> Result<HashMap<String, PackageManifest>, EnumeratePackageManifestsError> {
+    ) -> Result<HashMap<PackageName, PackageManifest>, EnumeratePackageManifestsError> {
         let map = get_internal_package_manifests(&self.root, &self.globs)?
             .map(|maybe_manifest| -> Result<_, WalkError> {
                 let manifest = maybe_manifest?;

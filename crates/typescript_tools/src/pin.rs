@@ -6,6 +6,7 @@ use crate::configuration_file::{ConfigurationFile, WriteError};
 use crate::io::FromFileError;
 use crate::monorepo_manifest::{EnumeratePackageManifestsError, MonorepoManifest};
 use crate::package_manifest::{DependencyGroup, PackageManifest};
+use crate::types::PackageName;
 use crate::unpinned_dependencies::{UnpinnedDependency, UnpinnedMonorepoDependencies};
 
 #[derive(Debug)]
@@ -82,7 +83,7 @@ pub enum PinErrorKind {
     Write(WriteError),
     #[non_exhaustive]
     NonStringVersionNumber {
-        package_name: String,
+        package_name: PackageName,
         dependency_name: String,
     },
 }
@@ -90,10 +91,10 @@ pub enum PinErrorKind {
 fn needs_modification<'a, 'b>(
     dependency_name: &'a String,
     dependency_version: &'a String,
-    package_version_by_package_name: &'b HashMap<String, String>,
+    package_version_by_package_name: &'b HashMap<PackageName, String>,
 ) -> Option<&'b String> {
     package_version_by_package_name
-        .get(dependency_name)
+        .get(&PackageName::from(dependency_name))
         .and_then(|expected| match expected == dependency_version {
             true => None,
             false => Some(expected),
@@ -120,15 +121,16 @@ where
 
     let package_manifest_by_package_name = lerna_manifest.package_manifests_by_package_name()?;
 
-    let package_version_by_package_name: HashMap<String, String> = package_manifest_by_package_name
-        .values()
-        .map(|package| {
-            (
-                package.contents.name.clone(),
-                package.contents.version.clone(),
-            )
-        })
-        .collect();
+    let package_version_by_package_name: HashMap<PackageName, String> =
+        package_manifest_by_package_name
+            .values()
+            .map(|package| {
+                (
+                    package.contents.name.clone(),
+                    package.contents.version.clone(),
+                )
+            })
+            .collect();
 
     for (package_name, mut package_manifest) in package_manifest_by_package_name {
         let mut dirty = false;
@@ -238,20 +240,20 @@ pub enum PinLintErrorKind {
     EnumeratePackageManifests(EnumeratePackageManifestsError),
     #[non_exhaustive]
     NonStringVersionNumber {
-        package_name: String,
-        dependency_name: String,
+        package_name: PackageName,
+        dependency_name: PackageName,
     },
     #[non_exhaustive]
     UnpinnedDependencies(UnpinnedMonorepoDependencies),
 }
 
 fn get_unpinned_dependency(
-    dependency_name: &String,
+    dependency_name: PackageName,
     dependency_version: &String,
-    package_version_by_package_name: &HashMap<String, String>,
+    package_version_by_package_name: &HashMap<PackageName, String>,
 ) -> Option<UnpinnedDependency> {
     package_version_by_package_name
-        .get(dependency_name)
+        .get(&dependency_name)
         .and_then(|expected| match expected == dependency_version {
             true => None,
             false => Some(UnpinnedDependency {
@@ -271,15 +273,16 @@ where
 
     let package_manifest_by_package_name = lerna_manifest.package_manifests_by_package_name()?;
 
-    let package_version_by_package_name: HashMap<String, String> = package_manifest_by_package_name
-        .values()
-        .map(|package| {
-            (
-                package.contents.name.clone(),
-                package.contents.version.clone(),
-            )
-        })
-        .collect();
+    let package_version_by_package_name: HashMap<PackageName, String> =
+        package_manifest_by_package_name
+            .values()
+            .map(|package| {
+                (
+                    package.contents.name.clone(),
+                    package.contents.version.clone(),
+                )
+            })
+            .collect();
 
     let unpinned_dependencies: UnpinnedMonorepoDependencies = package_manifest_by_package_name
         .into_iter()
