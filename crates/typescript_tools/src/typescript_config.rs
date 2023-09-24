@@ -1,9 +1,10 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
 use crate::configuration_file::ConfigurationFile;
 use crate::io::{read_json_from_file, FromFileError};
+use crate::types::Directory;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct TypescriptProjectReference {
@@ -22,7 +23,7 @@ pub struct TypescriptParentProjectReferenceFile {
 
 #[derive(Debug)]
 pub struct TypescriptParentProjectReference {
-    directory: PathBuf,
+    directory: Directory,
     pub contents: TypescriptParentProjectReferenceFile,
 }
 
@@ -31,18 +32,21 @@ impl ConfigurationFile for TypescriptParentProjectReference {
 
     const FILENAME: &'static str = "tsconfig.json";
 
-    fn from_directory(monorepo_root: &Path, directory: &Path) -> Result<Self, FromFileError> {
-        let filename = monorepo_root.join(directory).join(Self::FILENAME);
+    fn from_directory(
+        monorepo_root: &Directory,
+        directory: Directory,
+    ) -> Result<Self, FromFileError> {
+        let filename = monorepo_root.join(&directory).join(Self::FILENAME);
         let manifest_contents: TypescriptParentProjectReferenceFile =
             read_json_from_file(&filename)?;
         Ok(TypescriptParentProjectReference {
-            directory: directory.to_owned(),
+            directory,
             contents: manifest_contents,
         })
     }
 
-    fn directory(&self) -> PathBuf {
-        self.directory.to_owned()
+    fn directory(&self) -> &Directory {
+        &self.directory
     }
 
     fn path(&self) -> PathBuf {
@@ -56,7 +60,7 @@ impl ConfigurationFile for TypescriptParentProjectReference {
 
 #[derive(Debug)]
 pub struct TypescriptConfig {
-    directory: PathBuf,
+    directory: Directory,
     pub contents: serde_json::Map<String, serde_json::Value>,
 }
 
@@ -66,18 +70,18 @@ impl ConfigurationFile for TypescriptConfig {
     const FILENAME: &'static str = "tsconfig.json";
 
     fn from_directory(
-        monorepo_root: &Path,
-        directory: &Path,
+        monorepo_root: &Directory,
+        directory: Directory,
     ) -> Result<TypescriptConfig, FromFileError> {
-        let filename = monorepo_root.join(directory).join(Self::FILENAME);
+        let filename = monorepo_root.join(&directory).join(Self::FILENAME);
         Ok(TypescriptConfig {
-            directory: directory.to_owned(),
+            directory,
             contents: read_json_from_file(&filename)?,
         })
     }
 
-    fn directory(&self) -> PathBuf {
-        self.directory.to_owned()
+    fn directory(&self) -> &Directory {
+        &self.directory
     }
 
     fn path(&self) -> PathBuf {

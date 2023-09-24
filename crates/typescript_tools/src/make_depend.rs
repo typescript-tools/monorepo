@@ -10,6 +10,7 @@ use crate::configuration_file::ConfigurationFile;
 use crate::io::FromFileError;
 use crate::monorepo_manifest::{EnumeratePackageManifestsError, MonorepoManifest};
 use crate::package_manifest::PackageManifest;
+use crate::types::Directory;
 
 #[derive(Template)]
 #[template(path = "makefile")]
@@ -78,7 +79,11 @@ pub fn make_dependency_makefile(
     create_pack_target: bool,
 ) -> Result<(), MakeDependencyMakefileError> {
     let lerna_manifest = MonorepoManifest::from_directory(root)?;
-    let package_manifest = PackageManifest::from_directory(root, package_directory)?;
+    let package_manifest = PackageManifest::from_directory(
+        &lerna_manifest.root,
+        // FIXME: this should be checked but it was the behavior today
+        Directory::unchecked_from_path(package_directory),
+    )?;
 
     // determine the complete set of internal dependencies (and self!)
     let package_manifest_by_package_name = lerna_manifest.package_manifests_by_package_name()?;

@@ -1,10 +1,11 @@
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
 use crate::configuration_file::ConfigurationFile;
 use crate::io::{read_json_from_file, FromFileError};
+use crate::types::Directory;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -17,7 +18,7 @@ pub struct PackageManifestFile {
 
 #[derive(Clone, Debug)]
 pub struct PackageManifest {
-    directory: PathBuf,
+    relative_directory: Directory,
     pub contents: PackageManifestFile,
 }
 
@@ -38,21 +39,24 @@ impl ConfigurationFile for PackageManifest {
 
     const FILENAME: &'static str = "package.json";
 
-    fn from_directory(monorepo_root: &Path, directory: &Path) -> Result<Self, FromFileError> {
-        let filename = monorepo_root.join(directory).join(Self::FILENAME);
+    fn from_directory(
+        monorepo_root: &Directory,
+        relative_directory: Directory,
+    ) -> Result<Self, FromFileError> {
+        let filename = monorepo_root.join(&relative_directory).join(Self::FILENAME);
         let manifest_contents: PackageManifestFile = read_json_from_file(&filename)?;
         Ok(PackageManifest {
-            directory: directory.to_owned(),
+            relative_directory,
             contents: manifest_contents,
         })
     }
 
-    fn directory(&self) -> PathBuf {
-        self.directory.to_owned()
+    fn directory(&self) -> &Directory {
+        &self.relative_directory
     }
 
     fn path(&self) -> PathBuf {
-        self.directory.join(Self::FILENAME)
+        self.relative_directory.join(Self::FILENAME)
     }
 
     fn contents(&self) -> &PackageManifestFile {

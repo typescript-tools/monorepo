@@ -14,6 +14,7 @@ use crate::out_of_date_project_references::{
     OutOfDateParentProjectReferences, OutOfDateTypescriptConfig,
 };
 use crate::package_manifest::PackageManifest;
+use crate::types::Directory;
 use crate::typescript_config::{
     TypescriptConfig, TypescriptParentProjectReference, TypescriptProjectReference,
 };
@@ -101,15 +102,17 @@ impl std::error::Error for InvalidUtf8Error {
 }
 
 fn key_children_by_parent<M>(
-    mut accumulator: HashMap<PathBuf, Vec<String>>,
+    mut accumulator: HashMap<Directory, Vec<String>>,
     package_manifest: M,
-) -> Result<HashMap<PathBuf, Vec<String>>, InvalidUtf8Error>
+) -> Result<HashMap<Directory, Vec<String>>, InvalidUtf8Error>
 where
     M: Borrow<PackageManifest>,
 {
     let mut path_so_far = PathBuf::new();
     for component in package_manifest.borrow().directory().iter() {
-        let children = accumulator.entry(path_so_far.clone()).or_default();
+        let children = accumulator
+            .entry(Directory::unchecked_from_path(path_so_far.clone()))
+            .or_default();
 
         let new_child = component
             .to_str()
@@ -138,7 +141,7 @@ fn create_project_references(mut children: Vec<String>) -> Vec<TypescriptProject
 // Create a tsconfig.json file in each parent directory to an internal package.
 // This permits us to compile the monorepo from the top down.
 fn link_children_packages(
-    root: &Path,
+    root: &Directory,
     package_manifests_by_package_name: &HashMap<String, PackageManifest>,
 ) -> Result<(), LinkError> {
     out_of_date_parent_project_references(root, package_manifests_by_package_name)?.try_for_each(
@@ -154,7 +157,7 @@ fn link_children_packages(
 }
 
 fn link_package_dependencies(
-    root: &Path,
+    root: &Directory,
     package_manifests_by_package_name: &HashMap<String, PackageManifest>,
 ) -> Result<(), LinkError> {
     out_of_date_package_project_references(root, package_manifests_by_package_name)?
@@ -207,8 +210,8 @@ where
         let lerna_manifest = MonorepoManifest::from_directory(root)?;
         let package_manifests_by_package_name =
             lerna_manifest.package_manifests_by_package_name()?;
-        link_children_packages(root, &package_manifests_by_package_name)?;
-        link_package_dependencies(root, &package_manifests_by_package_name)?;
+        link_children_packages(&lerna_manifest.root, &package_manifests_by_package_name)?;
+        link_package_dependencies(&lerna_manifest.root, &package_manifests_by_package_name)?;
         // TODO(7): create `tsconfig.settings.json` files
         Ok(())
     }
@@ -290,7 +293,7 @@ pub enum LinkLintErrorKind {
 }
 
 fn out_of_date_parent_project_references<'a>(
-    root: &'a Path,
+    root: &'a Directory,
     package_manifests_by_package_name: &'a HashMap<String, PackageManifest>,
 ) -> Result<
     impl Iterator<Item = Result<OutOfDateParentProjectReferences, FromFileError>> + 'a,
@@ -302,7 +305,7 @@ fn out_of_date_parent_project_references<'a>(
         .into_iter()
         .map(move |(directory, children)| {
             let desired_references = create_project_references(children);
-            let tsconfig = TypescriptParentProjectReference::from_directory(&root, &directory)?;
+            let tsconfig = TypescriptParentProjectReference::from_directory(&root, directory)?;
             let current_project_references = &tsconfig.contents.references;
             let needs_update = !current_project_references.eq(&desired_references);
             Ok(match needs_update {
@@ -318,7 +321,7 @@ fn out_of_date_parent_project_references<'a>(
 }
 
 fn out_of_date_package_project_references<'a>(
-    root: &'a Path,
+    root: &'a Directory,
     package_manifests_by_package_name: &'a HashMap<String, PackageManifest>,
 ) -> Result<
     impl Iterator<Item = Result<OutOfDatePackageProjectReferences, FromFileError>> + 'a,
@@ -328,7 +331,7 @@ fn out_of_date_package_project_references<'a>(
         .values()
         .map(move |package_manifest| {
             let package_directory = package_manifest.directory();
-            let tsconfig = TypescriptConfig::from_directory(&root, &package_directory)?;
+            let tsconfig = TypescriptConfig::from_directory(&root, package_directory.to_owned())?;
             let internal_dependencies =
                 package_manifest.internal_dependencies_iter(&package_manifests_by_package_name);
 
@@ -383,23 +386,25 @@ where
     P: AsRef<Path>,
 {
     fn inner(root: &Path) -> Result<(), LinkLintError> {
-        let lerna_manifest = MonorepoManifest::from_directory(root)?;
+        let monorepo_manifest = MonorepoManifest::from_directory(root)?;
         let package_manifests_by_package_name =
-            lerna_manifest.package_manifests_by_package_name()?;
+            monorepo_manifest.package_manifests_by_package_name()?;
 
-        let is_children_link_success =
-            out_of_date_parent_project_references(root, &package_manifests_by_package_name)?.map(
-                |result| -> Result<OutOfDateTypescriptConfig, FromFileError> {
-                    result.map(Into::into)
-                },
-            );
+        let is_children_link_success = out_of_date_parent_project_references(
+            &monorepo_manifest.root,
+            &package_manifests_by_package_name,
+        )?
+        .map(
+            |result| -> Result<OutOfDateTypescriptConfig, FromFileError> { result.map(Into::into) },
+        );
 
-        let is_dependencies_link_success =
-            out_of_date_package_project_references(root, &package_manifests_by_package_name)?.map(
-                |result| -> Result<OutOfDateTypescriptConfig, FromFileError> {
-                    result.map(Into::into)
-                },
-            );
+        let is_dependencies_link_success = out_of_date_package_project_references(
+            &monorepo_manifest.root,
+            &package_manifests_by_package_name,
+        )?
+        .map(
+            |result| -> Result<OutOfDateTypescriptConfig, FromFileError> { result.map(Into::into) },
+        );
 
         let lint_issues: AllOutOfDateTypescriptConfig = is_children_link_success
             .chain(is_dependencies_link_success)

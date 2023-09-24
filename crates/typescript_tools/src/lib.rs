@@ -13,4 +13,5 @@ pub mod monorepo_manifest;
 pub mod package_manifest;
 pub mod pin;
 pub mod query;
+pub mod types;
 pub mod typescript_config;

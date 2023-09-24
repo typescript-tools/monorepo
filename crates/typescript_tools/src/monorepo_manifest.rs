@@ -9,6 +9,7 @@ use serde::Deserialize;
 use crate::configuration_file::ConfigurationFile;
 use crate::io::{read_json_from_file, FromFileError};
 use crate::package_manifest::PackageManifest;
+use crate::types::Directory;
 
 #[derive(Debug, Deserialize)]
 struct PackageManifestGlob(String);
@@ -25,7 +26,7 @@ struct WorkspaceManifest {
 
 #[derive(Debug)]
 pub struct MonorepoManifest {
-    root: PathBuf,
+    pub root: Directory,
     globs: Vec<PackageManifestGlob>,
 }
 
@@ -187,7 +188,7 @@ impl From<WalkError> for EnumeratePackageManifestsError {
 }
 
 fn get_internal_package_manifests(
-    monorepo_root: &Path,
+    monorepo_root: &Directory,
     package_globs: &[PackageManifestGlob],
 ) -> Result<impl Iterator<Item = Result<PackageManifest, WalkError>>, GlobError> {
     let mut package_manifests: Vec<String> = package_globs
@@ -206,6 +207,8 @@ fn get_internal_package_manifests(
     // Take ownership so we can move this value into the parallel_map
     let monorepo_root = monorepo_root.to_owned();
 
+    // DISCUSS: can we enforce _here_ that there are no files in the monorepo root,
+    // and never have to check that again anywhere else?
     let package_manifests_iter =
         GlobWalkerBuilder::from_patterns(&monorepo_root, &package_manifests)
             .file_type(FileType::FILE)
@@ -221,10 +224,14 @@ fn get_internal_package_manifests(
                     let path = dir_entry.path();
                     let manifest = PackageManifest::from_directory(
                         &monorepo_root,
-                        path.parent()
-                            .ok_or_else(|| WalkErrorKind::PackageInMonorepoRoot(path.to_owned()))?
-                            .strip_prefix(&monorepo_root)
-                            .expect("expected all files to be children of monorepo root"),
+                        Directory::unchecked_from_path(
+                            path.parent()
+                                .ok_or_else(|| {
+                                    WalkErrorKind::PackageInMonorepoRoot(path.to_owned())
+                                })?
+                                .strip_prefix(&monorepo_root)
+                                .expect("expected all files to be children of monorepo root"),
+                        ),
                     )
                     .map_err(WalkErrorKind::FromFile)?;
                     Ok(manifest)
@@ -242,7 +249,7 @@ impl MonorepoManifest {
         let filename = root.join(Self::LERNA_MANIFEST_FILENAME);
         let lerna_manifest: LernaManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
-            root: root.to_owned(),
+            root: Directory::unchecked_from_path(root),
             globs: lerna_manifest.packages,
         })
     }
@@ -251,7 +258,7 @@ impl MonorepoManifest {
         let filename = root.join(Self::PACKAGE_MANIFEST_FILENAME);
         let package_manifest: WorkspaceManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
-            root: root.to_owned(),
+            root: Directory::unchecked_from_path(root),
             globs: package_manifest.workspaces,
         })
     }

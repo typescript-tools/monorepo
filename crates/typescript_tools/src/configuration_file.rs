@@ -7,7 +7,7 @@ use std::{
 
 use serde::Serialize;
 
-use crate::io::FromFileError;
+use crate::{io::FromFileError, types::Directory};
 
 #[derive(Debug)]
 #[non_exhaustive]
@@ -49,11 +49,14 @@ pub trait ConfigurationFile: Sized {
 
     /// Create an instance of this configuration file by reading
     /// the specified file from this directory on disk.
-    fn from_directory(monorepo_root: &Path, directory: &Path) -> Result<Self, FromFileError>;
+    fn from_directory(
+        monorepo_root: &Directory,
+        relative_directory: Directory,
+    ) -> Result<Self, FromFileError>;
 
     /// Relative path to directory containing this configuration file,
     /// from monorepo root.
-    fn directory(&self) -> PathBuf;
+    fn directory(&self) -> &Directory;
 
     /// Relative path to this configuration file from the monorepo root.
     fn path(&self) -> PathBuf;
