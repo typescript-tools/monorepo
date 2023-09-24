@@ -1,3 +1,28 @@
+# [10.0.0](https://github.com/typescript-tools/monorepo/compare/v9.0.1...v10.0.0) (2023-09-24)
+
+
+* chore!: remove public visibility some `PackageManifest` functions ([ecab82f](https://github.com/typescript-tools/monorepo/commit/ecab82f4d1ce15ede3f0dc22754bfd3629d2fa61))
+* refactor!: introduce newtype for PackageName ([a2220d7](https://github.com/typescript-tools/monorepo/commit/a2220d72e638d087fcc18a9a625f16ba478222ec))
+* feat!: create `Directory` type to describe non-empty paths to directories ([3c2673a](https://github.com/typescript-tools/monorepo/commit/3c2673a2f10084b92826d7d03bcc92fbb8a5cfd3))
+
+
+### BREAKING CHANGES
+
+* remove public visbility on the following
+`PackageManifest` functions:
+
+- `get_dependency_versions`
+- `dependencies_iter`
+- `internal_dependencies_iter`
+- `transitive_interna_dependency_package_names_exclusive`
+- `npm_pack_file_basename`
+- `unscoped_package_name`
+
+These functions are intended for internal use only.
+* introduce newtype for PackageName
+* This prevents downstream code from having to handle the
+case where a package may be defined in the monorepo root.
+
 ## [9.0.1](https://github.com/typescript-tools/monorepo/compare/v9.0.0...v9.0.1) (2023-09-23)
 
 
