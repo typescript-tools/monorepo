@@ -18,9 +18,8 @@ struct LernaManifest {
     packages: Vec<PackageManifestGlob>,
 }
 
-// REFACTOR: drop the File suffix in this identifier
 #[derive(Debug, Deserialize)]
-struct PackageManifestFile {
+struct WorkspaceManifest {
     workspaces: Vec<PackageManifestGlob>,
 }
 
@@ -250,7 +249,7 @@ impl MonorepoManifest {
 
     fn from_package_manifest(root: &Path) -> Result<MonorepoManifest, FromFileError> {
         let filename = root.join(Self::PACKAGE_MANIFEST_FILENAME);
-        let package_manifest: PackageManifestFile = read_json_from_file(&filename)?;
+        let package_manifest: WorkspaceManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
             root: root.to_owned(),
             globs: package_manifest.workspaces,
