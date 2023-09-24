@@ -13,9 +13,8 @@ use crate::package_manifest::PackageManifest;
 #[derive(Debug, Deserialize)]
 struct PackageManifestGlob(String);
 
-// REFACTOR: drop the File suffix in this identifier
 #[derive(Debug, Deserialize)]
-struct LernaManifestFile {
+struct LernaManifest {
     packages: Vec<PackageManifestGlob>,
 }
 
@@ -242,7 +241,7 @@ impl MonorepoManifest {
 
     fn from_lerna_manifest(root: &Path) -> Result<MonorepoManifest, FromFileError> {
         let filename = root.join(Self::LERNA_MANIFEST_FILENAME);
-        let lerna_manifest: LernaManifestFile = read_json_from_file(&filename)?;
+        let lerna_manifest: LernaManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
             root: root.to_owned(),
             globs: lerna_manifest.packages,
