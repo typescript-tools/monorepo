@@ -1,3 +1,10 @@
+## [10.0.8](https://github.com/typescript-tools/monorepo/compare/v10.0.7...v10.0.8) (2023-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate globwalk to 0.9 ([fd8861f](https://github.com/typescript-tools/monorepo/commit/fd8861fb58acadfd128efbb6f981cadfeca40b52))
+
 ## [10.0.7](https://github.com/typescript-tools/monorepo/compare/v10.0.6...v10.0.7) (2023-12-05)
 
 
