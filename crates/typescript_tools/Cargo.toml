@@ -15,7 +15,7 @@ path = "src/lib.rs"
 
 [dependencies]
 askama = "0.12"
-globwalk = "0.8"
+globwalk = "0.9"
 pariter = "0.5"
 pathdiff = "0.2"
 serde = { version = "1", features = ["derive"] }
