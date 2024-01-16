@@ -1,3 +1,10 @@
+## [10.0.15](https://github.com/typescript-tools/monorepo/compare/v10.0.14...v10.0.15) (2024-01-16)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate clap to v4.4.17 ([e84ab79](https://github.com/typescript-tools/monorepo/commit/e84ab791b8587633792b0bfd7921f2344d60ba3c))
+
 ## [10.0.14](https://github.com/typescript-tools/monorepo/compare/v10.0.13...v10.0.14) (2024-01-12)
 
 
