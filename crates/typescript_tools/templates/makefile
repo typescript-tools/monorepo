@@ -2,7 +2,9 @@
 # This file is managed by the typescript-tools, see
 # https://github.com/typescript-tools/ for more information.
 
+{% if monorepo_kind == "lerna" %}
 LERNA = ./node_modules/.bin/lerna
+{%- endif %}
 MONOREPO = ./node_modules/.bin/monorepo
 
 MAKEDEPEND = $(MONOREPO) make-depend \
@@ -15,7 +17,11 @@ MAKEDEPEND = $(MONOREPO) make-depend \
 
 {{ package_directory }}/node_modules: $(MONOREPO) $({{ unscoped_package_name.replace("-", "_").to_uppercase() }}_INTERNAL_DEPENDENCY_MANIFESTS_INCLUSIVE)
 	@$(MAKEDEPEND)
+	{%- if monorepo_kind == "lerna" %}
 	$(LERNA) bootstrap --scope={{ scoped_package_name }} --include-dependencies
+	{%- else if monorepo_kind == "workspace" %}
+	npm install --workspace {{ package_directory }}
+	{%- endif %}
 	@touch $@
 
 $({{ unscoped_package_name.replace("-", "_").to_uppercase() }}_INTERNAL_DEPENDENCY_MANIFESTS_INCLUSIVE):

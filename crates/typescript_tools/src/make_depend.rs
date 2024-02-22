@@ -16,6 +16,7 @@ use crate::types::{Directory, PackageName};
 #[template(path = "makefile")]
 
 struct MakefileTemplate<'a> {
+    monorepo_kind: &'a str,
     root: &'a str,
     output_file: &'a str,
     package_directory: &'a str,
@@ -78,15 +79,15 @@ pub fn make_dependency_makefile(
     output_file: &Path,
     create_pack_target: bool,
 ) -> Result<(), MakeDependencyMakefileError> {
-    let lerna_manifest = MonorepoManifest::from_directory(root)?;
+    let monorepo_manifest = MonorepoManifest::from_directory(root)?;
     let package_manifest = PackageManifest::from_directory(
-        &lerna_manifest.root,
+        &monorepo_manifest.root,
         // FIXME: this should be checked but it was the behavior today
         Directory::unchecked_from_path(package_directory),
     )?;
 
     // determine the complete set of internal dependencies (and self!)
-    let package_manifest_by_package_name = lerna_manifest.package_manifests_by_package_name()?;
+    let package_manifest_by_package_name = monorepo_manifest.package_manifests_by_package_name()?;
 
     let internal_dependencies_exclusive: Vec<_> = package_manifest
         .transitive_internal_dependency_package_names_exclusive(&package_manifest_by_package_name)
@@ -124,6 +125,7 @@ pub fn make_dependency_makefile(
 
     // create a string of the makefile contents
     let makefile_contents = MakefileTemplate {
+        monorepo_kind: monorepo_manifest.kind.into(),
         root: root.to_str().expect("Monorepo root is not UTF_8 encodable"),
         output_file: output_file
             .to_str()
