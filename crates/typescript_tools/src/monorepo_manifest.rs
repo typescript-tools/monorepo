@@ -14,6 +14,21 @@ use crate::types::{Directory, PackageName};
 #[derive(Debug, Deserialize)]
 struct PackageManifestGlob(String);
 
+#[derive(Debug, Clone, Copy)]
+pub enum MonorepoKind {
+    Lerna,
+    Workspace,
+}
+
+impl Into<&'static str> for MonorepoKind {
+    fn into(self) -> &'static str {
+        match self {
+            MonorepoKind::Lerna => "lerna",
+            MonorepoKind::Workspace => "workspace",
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 struct LernaManifest {
     packages: Vec<PackageManifestGlob>,
@@ -26,6 +41,7 @@ struct WorkspaceManifest {
 
 #[derive(Debug)]
 pub struct MonorepoManifest {
+    pub kind: MonorepoKind,
     pub root: Directory,
     globs: Vec<PackageManifestGlob>,
 }
@@ -249,6 +265,7 @@ impl MonorepoManifest {
         let filename = root.join(Self::LERNA_MANIFEST_FILENAME);
         let lerna_manifest: LernaManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
+            kind: MonorepoKind::Lerna,
             root: Directory::unchecked_from_path(root),
             globs: lerna_manifest.packages,
         })
@@ -258,6 +275,7 @@ impl MonorepoManifest {
         let filename = root.join(Self::PACKAGE_MANIFEST_FILENAME);
         let package_manifest: WorkspaceManifest = read_json_from_file(&filename)?;
         Ok(MonorepoManifest {
+            kind: MonorepoKind::Workspace,
             root: Directory::unchecked_from_path(root),
             globs: package_manifest.workspaces,
         })
