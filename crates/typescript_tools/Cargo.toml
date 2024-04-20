@@ -7,6 +7,7 @@ license = "ISC"
 description = "Tools for working with TypeScript monorepos"
 readme = "README.md"
 homepage = "https://github.com/typescript-tools/monorepo"
+repository = "https://github.com/typescript-tools/monorepo"
 keywords = ["typescript", "monorepo"]
 
 [lib]
