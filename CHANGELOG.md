@@ -1,3 +1,11 @@
+# [10.1.0](https://github.com/typescript-tools/monorepo/compare/v10.0.26...v10.1.0) (2024-05-07)
+
+
+### Features
+
+* add kind tag to `MonorepoManifest` ([2d630b5](https://github.com/typescript-tools/monorepo/commit/2d630b5727e8939e1345cbe68a0e7412c231eee4))
+* generate non-lerna makefiles with make-depend ([8e195e7](https://github.com/typescript-tools/monorepo/commit/8e195e78fa2130ec800ae05697e2ec4793c3ac65))
+
 ## [10.0.26](https://github.com/typescript-tools/monorepo/compare/v10.0.25...v10.0.26) (2024-04-16)
 
 
