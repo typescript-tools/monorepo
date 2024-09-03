@@ -3,8 +3,8 @@ use std::fmt::Display;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use askama::Template;
 use pathdiff::diff_paths;
+use rinja::Template;
 
 use crate::configuration_file::ConfigurationFile;
 use crate::io::FromFileError;
