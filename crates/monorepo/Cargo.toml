@@ -17,5 +17,5 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { version = "=4.5.26", features = ["cargo", "derive"] }
-serde_json = { version = "=1.0.136", features = ["preserve_order"] }
+serde_json = { version = "=1.0.137", features = ["preserve_order"] }
 typescript_tools = { path = "../typescript_tools" }
