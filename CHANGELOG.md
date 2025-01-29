@@ -1,3 +1,16 @@
+## [10.1.33](https://github.com/typescript-tools/monorepo/compare/v10.1.32...v10.1.33) (2025-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate clap to v4.5.24 ([#66](https://github.com/typescript-tools/monorepo/issues/66)) ([9b7f7a0](https://github.com/typescript-tools/monorepo/commit/9b7f7a07a325686de56193e015dbd56568fe3ce5))
+* **deps:** update rust crate clap to v4.5.26 ([#68](https://github.com/typescript-tools/monorepo/issues/68)) ([679c786](https://github.com/typescript-tools/monorepo/commit/679c78648dde8e7aa3867435470264dfa6ed36ce))
+* **deps:** update rust crate clap to v4.5.27 ([#71](https://github.com/typescript-tools/monorepo/issues/71)) ([0b93c59](https://github.com/typescript-tools/monorepo/commit/0b93c591ed5f318ec95b9bc20b4ee7535cf5b001))
+* **deps:** update rust crate serde_json to v1.0.135 ([#67](https://github.com/typescript-tools/monorepo/issues/67)) ([1c3ee18](https://github.com/typescript-tools/monorepo/commit/1c3ee18020ad9410329e3979202d04d7e499a9d6))
+* **deps:** update rust crate serde_json to v1.0.136 ([#69](https://github.com/typescript-tools/monorepo/issues/69)) ([a08ce17](https://github.com/typescript-tools/monorepo/commit/a08ce177ff1a9e9290dc455d59dad6c31301a13f))
+* **deps:** update rust crate serde_json to v1.0.137 ([#70](https://github.com/typescript-tools/monorepo/issues/70)) ([f3bdbc4](https://github.com/typescript-tools/monorepo/commit/f3bdbc4c62d28b0336137d8055220b0daecd7a6c))
+* **deps:** update rust crate serde_json to v1.0.138 ([#72](https://github.com/typescript-tools/monorepo/issues/72)) ([b795be5](https://github.com/typescript-tools/monorepo/commit/b795be5f9de7ddd9f3afc1b1a5c9a63599b3130e))
+
 ## [10.1.32](https://github.com/typescript-tools/monorepo/compare/v10.1.31...v10.1.32) (2024-12-22)
 
 
