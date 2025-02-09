@@ -23,6 +23,6 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 
 [dev-dependencies]
-assert-json-diff = "2.0.2"
-tempdir = "0.3.7"
+assert-json-diff = "=2.0.2"
+tempdir = "=0.3.7"
 utilities = { path = "../utilities" }
