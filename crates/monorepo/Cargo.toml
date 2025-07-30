@@ -16,6 +16,6 @@ name = "monorepo"
 path = "src/main.rs"
 
 [dependencies]
-clap = { version = "=4.5.41", features = ["cargo", "derive"] }
+clap = { version = "=4.5.42", features = ["cargo", "derive"] }
 serde_json = { version = "=1.0.141", features = ["preserve_order"] }
 typescript_tools = { path = "../typescript_tools" }
