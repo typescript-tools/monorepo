@@ -1,3 +1,10 @@
+## [10.1.59](https://github.com/typescript-tools/monorepo/compare/v10.1.58...v10.1.59) (2025-09-14)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate serde_json to v1.0.145 ([#100](https://github.com/typescript-tools/monorepo/issues/100)) ([7095bb6](https://github.com/typescript-tools/monorepo/commit/7095bb6a450dd38334d423573a3112753fcc3388))
+
 ## [10.1.58](https://github.com/typescript-tools/monorepo/compare/v10.1.57...v10.1.58) (2025-09-14)
 
 
