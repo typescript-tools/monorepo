@@ -16,7 +16,7 @@ path = "src/lib.rs"
 
 [dependencies]
 globwalk = "0.9"
-pariter = "0.5"
+pariter = "0.6"
 pathdiff = "0.2"
 rinja = "0.3"
 serde = { version = "1", features = ["derive"] }
