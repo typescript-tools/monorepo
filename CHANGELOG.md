@@ -1,3 +1,10 @@
+## [10.1.71](https://github.com/typescript-tools/monorepo/compare/v10.1.70...v10.1.71) (2026-01-10)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate pariter to 0.6 ([#112](https://github.com/typescript-tools/monorepo/issues/112)) ([944e91e](https://github.com/typescript-tools/monorepo/commit/944e91eac3ebd08c1ec3eedf72db4d069b984667))
+
 ## [10.1.70](https://github.com/typescript-tools/monorepo/compare/v10.1.69...v10.1.70) (2026-01-07)
 
 
